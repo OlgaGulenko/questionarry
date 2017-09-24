@@ -21,7 +21,9 @@ class TestListComponent extends React.Component{
             sectionIndex: '',
 			answers: {},
 			value: '',
-			status: false
+			status: false,
+      introduction: '',
+      concluding: '',
         };
 
         this.nextSection = this.nextSection.bind(this);
@@ -31,7 +33,6 @@ class TestListComponent extends React.Component{
         this.sendAnswers = this.sendAnswers.bind(this);
     }
 
-
     componentDidMount(){
         this.getData();
     }
@@ -39,15 +40,19 @@ class TestListComponent extends React.Component{
 
 
     getData(){
-        axios.get('https://api.myjson.com/bins/1h43gp').then((response) => {
-            this.setState({questions: response.data, 
-            			   sections: [...this.state.sections, response.data[0].section], 
+        axios.get('https://api.myjson.com/bins/tkvgp').then((response) => {
+
+            /*this.setState({questions: response.data,
+            			   sections: [...this.state.sections, response.data[0].section],
             			   sectionIndex: 0});
             let sections = [];
             for(let question of response.data){
                 if(sections.findIndex(section => section.guid === question.section.guid) < 0) sections.push(question.section);
-            }
-            this.setState({ sections , status: true});
+            }*/
+
+            this.setState({sections:response.data.sections, introduction: response.data.introduction, concluding: response.data.concluding, status: true});
+            console.log(response)
+
         });
     }
 
@@ -146,8 +151,8 @@ class TestListComponent extends React.Component{
 		const questions = this.state.questions.map((question, i) => {
 			return (
 				<div key={i}>
-				  {this.state.questions[i].section.guid === 
-				  	this.state.sections[this.state.sectionIndex].guid 
+				  {this.state.questions[i].section.guid ===
+				  	this.state.sections[this.state.sectionIndex].guid
 					  	? <li>
 					  		{question.title}
 						  	{type[i]}
@@ -160,23 +165,31 @@ class TestListComponent extends React.Component{
 	      <div className="container">
 		    <div className="header clearfix">
   		      <h3>
-  		      	{this.state.sections.length > 0  
-	      			? this.state.sections[this.state.sectionIndex].title 
+  		      	{this.state.status !== false
+	      			? this.state.introduction
 	      			: 'Загрузка'}
-  		      </h3>
+  		      </h3><br/>
+            <strong> <h6>
+              {this.state.status !== false
+              ? this.state.concluding
+
+              : 'Description'}
+            </h6> </strong>
+
 		      <p className="float-right">
 		      	Раздел {this.state.sectionIndex + 1} из {this.state.sections.length}
 		      </p>
-		      <hr />
-		      <button type="button" className="btn" disabled={this.state.sectionIndex === 0} 
+		      <hr /><br/>
+
+		      <button type="button" className="btn" disabled={this.state.sectionIndex === 0}
 		      		  onClick={this.prevSection}>
 		      		Назад
 		      </button>
-			  {this.state.sectionIndex + 1 === this.state.sections.length 
+			  {this.state.sectionIndex + 1 === this.state.sections.length
 			  	? <button type="button" className="btn btn-success" id="btn-forward" onClick={this.sendAnswers}>
 			  		Отправить
-			  	  </button> 
-			  	: <button type="button" className="btn btn-primary" id="btn-forward" 
+			  	  </button>
+			  	: <button type="button" className="btn btn-primary" id="btn-forward"
 			  			onClick={this.nextSection}>
 			  		Вперед
 			  	</button>}
@@ -190,24 +203,22 @@ class TestListComponent extends React.Component{
 				  <div className="cssload-rb"></div>
 			  </div>)}
 
-
 		    <div className="bottom-nav">
-	    		<button type="button" className="btn" disabled={this.state.sectionIndex === 0} 
+	    		<button type="button" className="btn" disabled={this.state.sectionIndex === 0}
 	    				onClick={this.prevSection}>Назад</button>
-				{this.state.sectionIndex + 1 === this.state.sections.length 
-					?  <button type="button" className="btn btn-success" 
+				{this.state.sectionIndex + 1 === this.state.sections.length
+					?  <button type="button" className="btn btn-success"
 								id="btn-forward"
 								onClick={this.sendAnswers}>
 							Отправить
-						</button> 
-					:   <button type="button" className="btn btn-primary" id="btn-forward" 
+						</button>
+					:   <button type="button" className="btn btn-primary" id="btn-forward"
 								onClick={this.nextSection}>
 							Вперед
 						</button>}
 		    </div>
 		  </div>
 		)
-
 
 	}
 }
