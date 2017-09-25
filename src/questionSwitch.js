@@ -58,7 +58,7 @@ export default function questionSwitch(question, i = 0){
         />
       )
     }
-    case 'number': {
+    case 'Число': {
       return (
         <NumberComponent
           onChange={onChange}
