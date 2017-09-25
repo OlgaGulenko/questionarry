@@ -2,22 +2,30 @@ import React from 'react';
 
 export default class MultipleAnswerComponent extends React.Component{
     render(){
-        let variants = this.props.question.answerVariants.map((variant, i) => {
+        let variants=this.props.answers.filter(answer=>answer.elementaryQuestionGuid===this.props.question.elementaryQuestionGuid)
+            variants = variants.map((variant, i) => {
           return (
             <div className="form-check" key={i}>
-                <label className="form-check-label">
-                    <input className="form-check-input" type="checkbox" value={variant.guid}
-                           checked={this.props.value !== null ? this.props.value.indexOf(variant.guid) > -1: false}
-                           onChange={(e)=>this.props.onChange(e.target.value, this.props.question.guid)}/>
-                    {variant.title}
+
+                <label className="custom-control custom-checkbox">
+                  <input type="checkbox" className="custom-control-input"
+                    value={variant.answer.guid}
+                    checked={this.props.value !== null ? this.props.value.indexOf(variant.answer.guid) > -1: false}
+                    onChange={(e)=>this.props.onChange(e.target.value, this.props.question.guid)}
+                  />
+                  <span className="custom-control-indicator" type="checkbox" />
+                  <span className="custom-control-description">{variant.answer.title}</span>
                 </label>
             </div>
           )
-        })  
+        })
         return(
             <form>
                 <div className="form-check">
-                    <label>Тип ответа выбор нескольких вариантов из предложенных</label>
+                  <label>
+                    {this.props.question.code}&nbsp;
+                    {this.props.question.title}
+                  </label>
                     {variants}
                 </div>
             </form>

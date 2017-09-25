@@ -45,7 +45,16 @@ body{
   padding-left: 25px;
 }
 
+.questions-header{
+  position: relative;
+}
 
+.sections-counter{
+  position: absolute;
+  right: 0;
+  top: 0;
+  text-align: right;
+}
 
 .cssload-container {
   width: 72px;

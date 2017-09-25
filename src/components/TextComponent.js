@@ -5,7 +5,9 @@ export default class TextComponent extends React.Component{
         return(
             <form>
                 <div className="form-group">
-                    <label>Тип ответа текст</label>
+                    <label>
+                    {this.props.question.code}
+                    {this.props.question.title}</label>
                     <textarea className="form-control" rows="3"  value={this.props.value || ''}
                             onChange={(e)=>this.props.onChange(e.target.value, this.props.question.guid)}
                     />

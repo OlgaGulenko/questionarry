@@ -1,63 +1,44 @@
 import React from 'react';
 import '../App.css';
 import axios from 'axios';
-import StringComponent from './StringComponent';
-import TextComponent from './TextComponent';
-import BooleanComponent from './BooleanComponent';
-import CommentComponent from './CommentComponent';
-import DateComponent from './DateComponent';
-import MultipleAnswerComponent from './MultipleAnswerComponent';
-import NumberComponent from './NumberComponent';
-import SingleAnswerComponent from './SingleAnswerComponent';
-
+import questionSwitch, {setContext} from '../questionSwitch';
 
 
 class TestListComponent extends React.Component{
     constructor(props){
-        super(props);
-        this.state = {
-        	questions: [],
-            sections: [],
-            sectionIndex: '',
-			answers: {},
-			value: '',
-			status: false,
-      introduction: '',
-      concluding: '',
-        };
+      super(props);
+      this.state = {
+        sections: [],
+        sectionIndex: 0,
+        answers: {},
+        status: false
+      };
 
-        this.nextSection = this.nextSection.bind(this);
-        this.prevSection = this.prevSection.bind(this);
-        this.onChange = this.onChange.bind(this);
-        this.someOf = this.someOf.bind(this);
-        this.sendAnswers = this.sendAnswers.bind(this);
+      this.nextSection = this.nextSection.bind(this);
+      this.prevSection = this.prevSection.bind(this);
+      this.sendAnswers = this.sendAnswers.bind(this);
+
+      setContext(this);
     }
 
     componentDidMount(){
-        this.getData();
+      this.getData();
+
     }
 
+    async getData(){
+        try{
+          let response = await axios.get('https://api.myjson.com/bins/tkvgp');
 
-
-    getData(){
-        axios.get('https://api.myjson.com/bins/tkvgp').then((response) => {
-
-            /*this.setState({questions: response.data,
-            			   sections: [...this.state.sections, response.data[0].section],
-            			   sectionIndex: 0});
-            let sections = [];
-            for(let question of response.data){
-                if(sections.findIndex(section => section.guid === question.section.guid) < 0) sections.push(question.section);
-            }*/
-
-            this.setState({sections:response.data.sections, introduction: response.data.introduction, concluding: response.data.concluding, status: true});
-            console.log(response)
-
-        });
+          this.setState({ data: response.data , status: true});
+        } catch(e) {
+          alert(e.message);
+          console.error('fetch error', e);
+        }
     }
 
     nextSection(){
-        if(this.state.sectionIndex + 1  < this.state.sections.length){
+        if(this.state.sectionIndex + 1  < this.state.data.sections.length){
             this.setState({sectionIndex: this.state.sectionIndex + 1});
         }
     }
@@ -68,155 +49,68 @@ class TestListComponent extends React.Component{
         }
     }
 
-    onChange(value, guid){
-    	console.log(guid);
-    	let answers = Object.assign(this.state.answers);
-    	answers[guid] = value;
-    	this.setState({answers}, () => {console.log(this.state.answers);});
-	}
-
-	someOf(value, guid){
-		let answers = Object.assign(this.state.answers);
-		console.log("value: ",value, 'guid',guid);
-
-		let index = answers[guid] ? answers[guid].indexOf(value) : -1;
-		if(index > -1 ){
-			answers[guid].splice(index,1);
-		}else{
-            answers[guid] = answers[guid] ? [...answers[guid], value] : [value];
-        }
-        this.setState({answers}, () => {console.log(this.state.answers);});
-    }
-
     sendAnswers(){
-		console.log("Hey here is your answers!!! : ", this.state.answers);
-		// axios.post('',this.state.answers);
-	}
+  		console.log("Hey here is your answers!!! : ", this.state.answers);
+  		// axios.post('',this.state.answers);
+  	}
 
-	render() {
-        let type = this.state.questions.map((question, i) => {
-            switch(question.answerType){
-                case 'string': {
-                    return <StringComponent onChange={this.onChange} question={question}
-											value={this.state.answers[question.guid] !== undefined
-												? this.state.answers[question.guid]
-												:null}
-											key={i}/>;
-                }
-				case 'text': {
-                	return <TextComponent onChange={this.onChange} question={question}
-										  value={this.state.answers[question.guid] !== undefined
-                                              ? this.state.answers[question.guid]
-                                              :null}Name
-										  key={i}/>;
-				}
-				case 'number': {
-                	return <NumberComponent onChange={this.onChange} question={question}
-											value={this.state.answers[question.guid] !== undefined
-                                                ? this.state.answers[question.guid]
-                                                :null}
-											key={i}/>;
-				}
-				case 'date': {
-                	return <DateComponent onChange={this.onChange} question={question}
-										  value={this.state.answers[question.guid] !== undefined
-                                              ? this.state.answers[question.guid]
-                                              :null}
-										  key={i}/>;
-				}
-				case 'bool': {
-                	return <BooleanComponent onChange={this.onChange} question={question}
-											 value={this.state.answers[question.guid] !== undefined
-                                                 ? this.state.answers[question.guid]
-                                                 :null}
-											 key={i}/>;
-				}
-				case 'oneof': {
-                	return <SingleAnswerComponent onChange={this.onChange} question={question}
-												  value={this.state.answers[question.guid] !== undefined
-                                                      ? this.state.answers[question.guid]
-                                                      :null}
-												  key={i}/>;
-				}
-				case 'someof': {
-                	return <MultipleAnswerComponent onChange={this.someOf} question={question}
-													value={this.state.answers[question.guid] !== undefined
-                                                        ? this.state.answers[question.guid]
-                                                        :null}
-													key={i}/>;
-				}
-            }
-		});
+  	render() {
+		const questions = this.state.status ? this.state.data.sections[this.state.sectionIndex].questions.map((question, i) => questionSwitch(question, i)) : [];
 
-		const questions = this.state.questions.map((question, i) => {
-			return (
-				<div key={i}>
-				  {this.state.questions[i].section.guid ===
-				  	this.state.sections[this.state.sectionIndex].guid
-					  	? <li>
-					  		{question.title}
-						  	{type[i]}
-					  	  </li>
-					  : null}
-				</div>
-			)
-		});
 		return (
-	      <div className="container">
-		    <div className="header clearfix">
-  		      <h3>
-  		      	{this.state.status !== false
-	      			? this.state.introduction
-	      			: 'Загрузка'}
-  		      </h3><br/>
-            <strong> <h6>
-              {this.state.status !== false
-              ? this.state.concluding
+      <div className="container">
 
-              : 'Description'}
-            </h6> </strong>
+        {this.state.status ? (
+          <div className="questions-header">
+            <h3>{this.state.data.introduction}</h3>
+            <span>{this.state.data.concluding}</span>
+            <p className="sections-counter">
+  		      	Раздел {this.state.sectionIndex + 1} из {this.state.status ? this.state.data.sections.length : 0}
+              <br />
+              {this.state.data.sections[this.state.sectionIndex].title}
+  		      </p>
+  		      <hr />
+          </div>
+        ) : null}
 
-		      <p className="float-right">
-		      	Раздел {this.state.sectionIndex + 1} из {this.state.sections.length}
-		      </p>
-		      <hr /><br/>
 
-		      <button type="button" className="btn" disabled={this.state.sectionIndex === 0}
-		      		  onClick={this.prevSection}>
-		      		Назад
-		      </button>
-			  {this.state.sectionIndex + 1 === this.state.sections.length
-			  	? <button type="button" className="btn btn-success" id="btn-forward" onClick={this.sendAnswers}>
+	      <button type="button" className="btn" disabled={this.state.sectionIndex === 0} onClick={this.prevSection}>
+      		Назад
+	      </button>
+        { this.state.status && this.state.sectionIndex + 1 === this.state.data.sections.length ? (
+          <button type="button" className="btn btn-success" id="btn-forward" onClick={this.sendAnswers}>
 			  		Отправить
-			  	  </button>
-			  	: <button type="button" className="btn btn-primary" id="btn-forward"
-			  			onClick={this.nextSection}>
+		  	  </button>
+        ) : (
+          <button type="button" className="btn btn-primary" id="btn-forward" onClick={this.nextSection}>
 			  		Вперед
-			  	</button>}
-		    </div>
-			  {this.state.status ? <div className="main">
-				  <ol>{questions}</ol>
-			  </div>: (<div className="cssload-container">
-				  <div className="cssload-lt"></div>
-				  <div className="cssload-rt"></div>
-				  <div className="cssload-lb"></div>
-				  <div className="cssload-rb"></div>
-			  </div>)}
+			  	</button>
+        )}
 
-		    <div className="bottom-nav">
-	    		<button type="button" className="btn" disabled={this.state.sectionIndex === 0}
-	    				onClick={this.prevSection}>Назад</button>
-				{this.state.sectionIndex + 1 === this.state.sections.length
-					?  <button type="button" className="btn btn-success"
-								id="btn-forward"
-								onClick={this.sendAnswers}>
-							Отправить
-						</button>
-					:   <button type="button" className="btn btn-primary" id="btn-forward"
-								onClick={this.nextSection}>
-							Вперед
-						</button>}
-		    </div>
+			  {this.state.status ? (
+          <div className="main">
+  				  <div>{questions}</div>
+  			  </div>
+        ): (
+          <div className="cssload-container">
+  				  <div className="cssload-lt"></div>
+  				  <div className="cssload-rt"></div>
+  				  <div className="cssload-lb"></div>
+  				  <div className="cssload-rb"></div>
+  			  </div>
+        )}
+        <button type="button" className="btn" disabled={this.state.sectionIndex === 0} onClick={this.prevSection}>
+      		Назад
+	      </button>
+        { this.state.status && this.state.sectionIndex + 1 === this.state.data.sections.length ? (
+          <button type="button" className="btn btn-success" id="btn-forward" onClick={this.sendAnswers}>
+			  		Отправить
+		  	  </button>
+        ) : (
+          <button type="button" className="btn btn-primary" id="btn-forward" onClick={this.nextSection}>
+			  		Вперед
+			  	</button>
+        )}
 		  </div>
 		)
 
