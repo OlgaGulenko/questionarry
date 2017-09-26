@@ -19,7 +19,7 @@ export default class BooleanComponent extends React.Component{
                           className="custom-control-input"
                           value={true}
                           checked={this.props.value === true}
-                          onChange={(e)=>this.props.onChange(true, this.props.question.guid)}
+                          onChange={(e)=>this.props.onChange(true, this.props.question.guid, this.props.question.elementaryQuestionGuid)}
                         />
                         <span
                           className="custom-control-indicator"
@@ -39,7 +39,7 @@ export default class BooleanComponent extends React.Component{
                           className="custom-control-input"
                           value={false}
                           checked={this.props.value === false}
-                          onChange={(e)=>this.props.onChange(false, this.props.question.guid)}
+                          onChange={(e)=>this.props.onChange(false, this.props.question.guid, this.props.question.elementaryQuestionGuid)}
                         />
                         <span
                           className="custom-control-indicator"

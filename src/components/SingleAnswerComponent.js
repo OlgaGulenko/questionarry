@@ -15,7 +15,7 @@ export default class SingleAnswerComponent extends React.Component{
                   className="custom-control-input"
                   value={variant.answer.guid}
                   checked={this.props.value === variant.answer.guid}
-                  onChange={(e)=>this.props.onChange(e.target.value, this.props.question.guid)}
+                  onChange={(e)=>this.props.onChange(e.target.value, this.props.question.guid, this.props.question.elementaryQuestionGuid)}
                 />
                 <span
                   className="custom-control-indicator"

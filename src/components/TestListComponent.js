@@ -57,6 +57,17 @@ class TestListComponent extends React.Component{
   		this.setState({ sent: true })
   	}
 
+    transformJson(){
+      let answers = Object.assign(this.state.answers);
+
+      return JSON.stringify({
+        Id: this.state.data.Id,
+        questionnaire: this.state.data.questionnaire,
+        respondent: this.state.data.respondent,
+        answers: answers
+      })
+    }
+
   	render() {
 		const questions = this.state.status ? this.state.data.sections[this.state.sectionIndex].questions.map((question, i) => questionSwitch(question, i)) : [];
 
@@ -133,13 +144,7 @@ class TestListComponent extends React.Component{
               <div className="card-body">
 
                 <code>
-                  {JSON.stringify({
-                    Id: this.state.data.Id,
-                    questionnaire: this.state.data.questionnaire,
-                    respondent: this.state.data.respondent,
-                    answers: this.state.answers,
-                    comments: this.state.comments
-                  })}
+                  {this.transformJson()}
                 </code>
               </div>
             </div>
