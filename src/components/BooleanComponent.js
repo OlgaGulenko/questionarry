@@ -17,9 +17,9 @@ export default class BooleanComponent extends React.Component{
                           name="radio"
                           type="radio"
                           className="custom-control-input"
-                          value='true'
-                          checked={this.props.value === "true"}
-                          onChange={(e)=>this.props.onChange(e.target.value, this.props.question.guid)}
+                          value={true}
+                          checked={this.props.value === true}
+                          onChange={(e)=>this.props.onChange(true, this.props.question.guid)}
                         />
                         <span
                           className="custom-control-indicator"
@@ -37,9 +37,9 @@ export default class BooleanComponent extends React.Component{
                           name="radio"
                           type="radio"
                           className="custom-control-input"
-                          value='false'
-                          checked={this.props.value === "false"}
-                          onChange={(e)=>this.props.onChange(e.target.value, this.props.question.guid)}
+                          value={false}
+                          checked={this.props.value === false}
+                          onChange={(e)=>this.props.onChange(false, this.props.question.guid)}
                         />
                         <span
                           className="custom-control-indicator"
