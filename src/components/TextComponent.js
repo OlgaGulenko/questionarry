@@ -17,9 +17,8 @@ export default class TextComponent extends React.Component{
             { this.props.question.requestComment ? (
               <div className="form-group">
                 <label>Обязательный комментарий</label>
-                <textarea className="form-control"></textarea>
+                <textarea placeholder={this.props.question.commentExplanation} className="form-control"></textarea>
               </div>
-
             ) : (
               <strong></strong>
             )}
@@ -27,3 +26,4 @@ export default class TextComponent extends React.Component{
         )
     }
 }
+/*maxLength={this.props.question.length} */

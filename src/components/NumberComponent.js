@@ -33,10 +33,10 @@ export default class NumberComponent extends React.Component{
 
                 </div>
             </form>
-						{ this.props.question.requestComment ? (
+						{ this.props.question.requestComment ==true ? (
 							<div className="form-group">
 								<label>Обязательный комментарий</label>
-								<textarea className="form-control"></textarea>
+								<textarea  placeholder={this.props.question.commentExplanation} className="form-control"></textarea>
 							</div>
 
 						) : (

@@ -9,13 +9,13 @@ export default class StringComponent extends React.Component{
                   {this.props.question.code}&nbsp;
                   {this.props.question.title}
                 </label>
-                <input type="text" className="form-control" value={this.props.value || ''} onChange={(e)=>this.props.onChange(e.target.value, this.props.question.guid ? this.props.question.guid : this.props.question.elementaryQuestionGuid)}/>
+                <input maxLength={this.props.question.length} type="text" className="form-control" value={this.props.value || ''} onChange={(e)=>this.props.onChange(e.target.value, this.props.question.guid)}/>
 
             </div>
-            { this.props.question.requestComment ? (
+            { this.props.question.requestComment == true ? (
               <div className="form-group">
                 <label>Обязательный комментарий</label>
-                <textarea className="form-control"></textarea>
+                <textarea placeholder={this.props.question.commentExplanation} className="form-control"></textarea>
               </div>
 
             ) : (

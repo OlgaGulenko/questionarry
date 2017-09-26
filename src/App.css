@@ -211,6 +211,11 @@ body{
   -webkit-animation: cssload-clockwise 1.15s linear infinite;
   -moz-animation: cssload-clockwise 1.15s linear infinite;
 }
+.successcontact{
+  width: 60%;
+  height: 60%;
+  
+}
 
 @keyframes cssload-clockwise {
   0% {

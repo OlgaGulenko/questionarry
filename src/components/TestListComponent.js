@@ -2,7 +2,7 @@ import React from 'react';
 import '../App.css';
 import axios from 'axios';
 import questionSwitch, {setContext} from '../questionSwitch';
-
+import SuccessImg from './success_contact.png';
 
 class TestListComponent extends React.Component{
     constructor(props){
@@ -117,13 +117,16 @@ class TestListComponent extends React.Component{
           </div>
         ):(
           <div>
-            <strong>Ваша анкета успешно отправлена</strong>
-
+            <div className="text-center">
+              <br/><strong><h3>Ваша анкета успешно отправлена</h3></strong><br/>
+              <img src={SuccessImg} className="rounded" height="200px" width="200px" />
+            </div><br/>
             <div className="card">
               <div className="card-header">
                 JSON
               </div>
               <div className="card-body">
+
                 <code>{JSON.stringify(this.state.answers)}</code>
               </div>
             </div>
