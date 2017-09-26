@@ -9,7 +9,7 @@ export default class StringComponent extends React.Component{
                   {this.props.question.code}&nbsp;
                   {this.props.question.title}
                 </label>
-                <input type="text" className="form-control" value={this.props.value || ''} onChange={(e)=>this.props.onChange(e.target.value, this.props.question.guid)}/>
+                <input type="text" className="form-control" value={this.props.value || ''} onChange={(e)=>this.props.onChange(e.target.value, this.props.question.guid ? this.props.question.guid : this.props.question.elementaryQuestionGuid)}/>
 
             </div>
             { this.props.question.requestComment ? (

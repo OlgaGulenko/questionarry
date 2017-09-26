@@ -11,10 +11,11 @@ class TestListComponent extends React.Component{
         sections: [],
         sectionIndex: 0,
         answers: {},
+        comments: {},
         status: false,
         sent: false
       };
-      // <pre>{JSON.stringify(this.state.answers)}</pre>
+
       this.nextSection = this.nextSection.bind(this);
       this.prevSection = this.prevSection.bind(this);
       this.sendAnswers = this.sendAnswers.bind(this);
@@ -27,26 +28,26 @@ class TestListComponent extends React.Component{
     }
 
     async getData(){
-        try{
-          let response = await axios.get('https://api.myjson.com/bins/amxb5');
+      try{
+        let response = await axios.get('https://api.myjson.com/bins/1hg0h5');
 
-          this.setState({ data: response.data , status: true});
-        } catch(e) {
-          alert(e.message);
-          console.error('fetch error', e);
-        }
+        this.setState({ data: response.data , status: true});
+      } catch(e) {
+        alert(e.message);
+        console.error('fetch error', e);
+      }
     }
 
     nextSection(){
-        if(this.state.sectionIndex + 1  < this.state.data.sections.length){
-            this.setState({sectionIndex: this.state.sectionIndex + 1});
-        }
+      if(this.state.sectionIndex + 1  < this.state.data.sections.length){
+          this.setState({sectionIndex: this.state.sectionIndex + 1});
+      }
     }
 
     prevSection(){
-        if(this.state.sectionIndex  > 0){
-            this.setState({sectionIndex: this.state.sectionIndex - 1});
-        }
+      if(this.state.sectionIndex  > 0){
+          this.setState({sectionIndex: this.state.sectionIndex - 1});
+      }
     }
 
     sendAnswers(){
@@ -63,7 +64,7 @@ class TestListComponent extends React.Component{
         {this.state.status ? (
           <div className="questions-header">
             <h3>{this.state.data.introduction}</h3>
-            <span>{this.state.data.concluding}</span>
+            <span>{this.state.data.concluding !== "" ? this.state.data.concluding : <br />}</span>
             <p className="sections-counter">
   		      	Раздел {this.state.sectionIndex + 1} из {this.state.status ? this.state.data.sections.length : 0}
               <br />

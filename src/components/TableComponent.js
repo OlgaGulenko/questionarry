@@ -3,44 +3,76 @@ import React from 'react';
 import questionSwitch from '../questionSwitch';
 
 export default class TableComponent extends React.Component{
-    constructor(){
-      super();
+    constructor(props){
+      super(props);
 
-      this.state = {
-        rows: []
-      };
+      if(this.props.value){
+        console.log('value', this.props.value);
+
+        let keys = Object.keys(this.props.value);
+        let count = 0;
+        for(let key of keys){
+          count = this.props.value[key].length > count ? this.props.value[key].length : count;
+        }
+
+        let rows = [];
+        for(let i = 0; i < count; i++){
+          rows.push({});
+        }
+
+        this.state = { rows };
+      } else {
+        this.state = {
+          rows: []
+        }
+      }
     }
 
     addRow(){
       let rows = Array.from(this.state.rows);
 
-      rows.push(0);
+      rows.push({});
       this.setState({ rows });
     }
 
     removeRow(index){
       let rows = Array.from(this.state.rows);
-      console.log(index)
+
       rows.splice(index, 1);
       this.setState({ rows });
     }
 
+    onChangeRow(index, value, guid){
+      let rows = Array.from(this.state.rows);
+
+      rows[index][guid] = value;
+
+      console.log(rows);
+      this.setState({ rows }, () => {
+        this.props.onChange({ rows }, this.props.question.guid);
+      });
+    }
+
     render(){
-      let rows = this.state.rows.map((row, index) => {
+      let rows = this.state.rows.map((row, idx) => {
         return (
-          <tr key={index}>
-            <td>{ index + 1 }</td>
+          <tr key={idx}>
+            <td>{ idx + 1 }</td>
             { this.props.question.tabularQuestionList.map((column, index) => {
               return (
-                <td key={index}>{questionSwitch(column)}</td>
+                <td key={index}>{questionSwitch(column, 0, {
+                  guid: this.props.question.guid,
+                  elementaryQuestionGuid: column.elementaryQuestionGuid,
+                  index: idx
+                })}</td>
               )
             }) }
-            <td><i onClick={this.removeRow.bind(this, index)} className="fa fa-times" aria-hidden="true"></i></td>
+            <td><i onClick={this.removeRow.bind(this, idx)} className="fa fa-times" aria-hidden="true"></i></td>
 
           </tr>
 
         )
-      })
+      });
 
       return(
         <div>

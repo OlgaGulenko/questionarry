@@ -15,12 +15,13 @@ export function setContext(ctx){
   context = ctx;
 }
 
-
 function onChange(value, guid){
-  console.log(guid);
+  //console.log(guid);
   let answers = Object.assign(context.state.answers);
   answers[guid] = value;
-  context.setState({answers}, () => {console.log(context.state.answers);});
+  context.setState({answers}, () => {
+    console.log(answers);
+  });
 }
 
 function someOf(value, guid){
@@ -36,64 +37,153 @@ function someOf(value, guid){
   context.setState({answers}, () => {console.log(context.state.answers);});
 }
 
-export default function questionSwitch(question, i = 0){
+function onChangeTable(table, value, guid){
+  let answers = Object.assign(context.state.answers);
+
+  /*
+    table
+      .guid
+      .elementaryQuestionGuid
+      .index
+
+    value
+
+    guid
+  */
+
+  answers[table.guid] = answers[table.guid] ? answers[table.guid] : {};
+  answers[table.guid][table.elementaryQuestionGuid] = answers[table.guid][table.elementaryQuestionGuid] ? answers[table.guid][table.elementaryQuestionGuid] : [];
+  answers[table.guid][table.elementaryQuestionGuid][table.index] = value;
+
+  context.setState({answers}, () => {
+    console.log('answers', answers);
+  });
+}
+
+export default function questionSwitch(question, i = 0, table = null){
   switch(question.answerType){
     case 'Строка': {
+      let value = null;
+      if(!table && context.state.answers[question.guid] !== undefined){
+        value = context.state.answers[question.guid];
+      }
+      if(table &&
+        context.state.answers[table.guid] &&
+        context.state.answers[table.guid][table.elementaryQuestionGuid] &&
+        context.state.answers[table.guid][table.elementaryQuestionGuid][table.index]){
+        value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
+      }
+
       return (
         <StringComponent
-          onChange={onChange}
+          onChange={table ? onChangeTable.bind(null, table) : onChange}
           question={question}
-          value={context.state.answers[question.guid] !== undefined ? context.state.answers[question.guid] :null }
+          value={value}
           key={i}
         />
       )
     }
     case 'text': {
+      let value = null;
+      if(!table && context.state.answers[question.guid] !== undefined){
+        value = context.state.answers[question.guid];
+      }
+      if(table &&
+        context.state.answers[table.guid] &&
+        context.state.answers[table.guid][table.elementaryQuestionGuid] &&
+        context.state.answers[table.guid][table.elementaryQuestionGuid][table.index]){
+        value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
+      }
+
       return(
         <TextComponent
-          onChange={onChange}
+          onChange={table ? onChangeTable.bind(null, table) : onChange}
           question={question}
-          value={context.state.answers[question.guid] !== undefined ? context.state.answers[question.guid] :null}
+          value={value}
           key={i}
         />
       )
     }
     case 'Число': {
+      let value = null;
+      if(!table && context.state.answers[question.guid] !== undefined){
+        value = context.state.answers[question.guid];
+      }
+      if(table &&
+        context.state.answers[table.guid] &&
+        context.state.answers[table.guid][table.elementaryQuestionGuid] &&
+        context.state.answers[table.guid][table.elementaryQuestionGuid][table.index]){
+        value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
+      }
+
       return (
         <NumberComponent
-          onChange={onChange}
+          onChange={table ? onChangeTable.bind(null, table) : onChange}
           question={question}
-          value={context.state.answers[question.guid] !== undefined ? context.state.answers[question.guid] :null}
+          value={value}
           key={i}
         />
       )
     }
     case 'Дата': {
+      let value = null;
+      if(!table && context.state.answers[question.guid] !== undefined){
+        value = context.state.answers[question.guid];
+      }
+      if(table &&
+        context.state.answers[table.guid] &&
+        context.state.answers[table.guid][table.elementaryQuestionGuid] &&
+        context.state.answers[table.guid][table.elementaryQuestionGuid][table.index]){
+        value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
+      }
+
       return (
         <DateComponent
-          onChange={onChange}
+          onChange={table ? onChangeTable.bind(null, table) : onChange}
           question={question}
-          value={context.state.answers[question.guid] !== undefined ? context.state.answers[question.guid] :null}
+          value={table}
           key={i}
         />
       )
     }
     case 'Булево': {
+      let value = null;
+      if(!table && context.state.answers[question.guid] !== undefined){
+        value = context.state.answers[question.guid];
+      }
+      if(table &&
+        context.state.answers[table.guid] &&
+        context.state.answers[table.guid][table.elementaryQuestionGuid] &&
+        context.state.answers[table.guid][table.elementaryQuestionGuid][table.index]){
+        value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
+      }
+
       return (
         <BooleanComponent
-          onChange={onChange}
+          onChange={table ? onChangeTable.bind(null, table) : onChange}
           question={question}
-          value={context.state.answers[question.guid] !== undefined ? context.state.answers[question.guid] :null}
+          value={value}
           key={i}
         />
       )
     }
     case 'Выбор одного варианта ответа из предложенных': {
+      let value = null;
+      if(!table && context.state.answers[question.guid] !== undefined){
+        value = context.state.answers[question.guid];
+      }
+      if(table &&
+        context.state.answers[table.guid] &&
+        context.state.answers[table.guid][table.elementaryQuestionGuid] &&
+        context.state.answers[table.guid][table.elementaryQuestionGuid][table.index]){
+        value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
+      }
+
       return (
         <SingleAnswerComponent
-          onChange={onChange}
+          onChange={table ? onChangeTable.bind(null, table) : onChange}
           question={question}
-          value={context.state.answers[question.guid] !== undefined ? context.state.answers[question.guid] :null}
+          value={value}
           key={i}
           answers={context.state.data.sections[context.state.sectionIndex].answers}
         />
@@ -102,7 +192,7 @@ export default function questionSwitch(question, i = 0){
     case '': {
       return (
         <TableComponent
-          onChange={onChange}
+          onChange={table ? onChangeTable.bind(null, table) : onChange}
           question={question}
           value={context.state.answers[question.guid] !== undefined ? context.state.answers[question.guid] :null}
           key={i}
@@ -110,11 +200,22 @@ export default function questionSwitch(question, i = 0){
       )
     }
     case 'Выбор нескольких вариантов ответа из предложенных': {
+      let value = null;
+      if(!table && context.state.answers[question.guid] !== undefined){
+        value = context.state.answers[question.guid];
+      }
+      if(table &&
+        context.state.answers[table.guid] &&
+        context.state.answers[table.guid][table.elementaryQuestionGuid] &&
+        context.state.answers[table.guid][table.elementaryQuestionGuid][table.index]){
+        value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
+      }
+
       return (
         <MultipleAnswerComponent
-          onChange={someOf}
+          onChange={table ? onChangeTable.bind(null, table) : someOf}
           question={question}
-          value={context.state.answers[question.guid] !== undefined ? context.state.answers[question.guid] : null}
+          value={value}
           key={i}
           answers={context.state.data.sections[context.state.sectionIndex].answers}
         />
