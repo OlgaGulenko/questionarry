@@ -24,6 +24,14 @@ function onChange(value, guid){
   });
 }
 
+function onChangeComment(value, guid){
+  let comments = Object.assign(context.state.comments);
+  comments[guid] = value;
+  context.setState({comments}, () => {
+    console.log('comments', comments);
+  });
+}
+
 function someOf(value, guid){
   let answers = Object.assign(context.state.answers);
   console.log("value: ",value, 'guid',guid);
@@ -40,23 +48,26 @@ function someOf(value, guid){
 function onChangeTable(table, value, guid){
   let answers = Object.assign(context.state.answers);
 
-  /*
-    table
-      .guid
-      .elementaryQuestionGuid
-      .index
-
-    value
-
-    guid
-  */
-
   answers[table.guid] = answers[table.guid] ? answers[table.guid] : {};
   answers[table.guid][table.elementaryQuestionGuid] = answers[table.guid][table.elementaryQuestionGuid] ? answers[table.guid][table.elementaryQuestionGuid] : [];
   answers[table.guid][table.elementaryQuestionGuid][table.index] = value;
 
   context.setState({answers}, () => {
     console.log('answers', answers);
+  });
+}
+
+function onChangeTableComment(table, value, guid){
+  let comments = Object.assign(context.state.comments);
+
+  console.log('onChangeTableComment', table, value, guid)
+
+  comments[table.guid] = comments[table.guid] ? comments[table.guid] : {};
+  comments[table.guid][table.elementaryQuestionGuid] = comments[table.guid][table.elementaryQuestionGuid] ? comments[table.guid][table.elementaryQuestionGuid] : [];
+  comments[table.guid][table.elementaryQuestionGuid][table.index] = value;
+
+  context.setState({comments}, () => {
+    console.log('comments', comments);
   });
 }
 
@@ -74,9 +85,22 @@ export default function questionSwitch(question, i = 0, table = null){
         value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
       }
 
+      let comment = null;
+      if(!table && context.state.comments[question.guid] !== undefined){
+        comment = context.state.comments[question.guid];
+      }
+      if(table &&
+        context.state.comments[table.guid] &&
+        context.state.comments[table.guid][table.elementaryQuestionGuid] &&
+        context.state.comments[table.guid][table.elementaryQuestionGuid][table.index]){
+        comment = context.state.comments[table.guid][table.elementaryQuestionGuid][table.index];
+      }
+
       return (
         <StringComponent
           onChange={table ? onChangeTable.bind(null, table) : onChange}
+          onChangeComment={table ? onChangeTableComment.bind(null, table) : onChangeComment}
+          comment={comment}
           question={question}
           value={value}
           key={i}
@@ -95,9 +119,22 @@ export default function questionSwitch(question, i = 0, table = null){
         value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
       }
 
+      let comment = null;
+      if(!table && context.state.comments[question.guid] !== undefined){
+        comment = context.state.comments[question.guid];
+      }
+      if(table &&
+        context.state.comments[table.guid] &&
+        context.state.comments[table.guid][table.elementaryQuestionGuid] &&
+        context.state.comments[table.guid][table.elementaryQuestionGuid][table.index]){
+        comment = context.state.comments[table.guid][table.elementaryQuestionGuid][table.index];
+      }
+
       return(
         <TextComponent
           onChange={table ? onChangeTable.bind(null, table) : onChange}
+          onChangeComment={table ? onChangeTableComment.bind(null, table) : onChangeComment}
+          comment={comment}
           question={question}
           value={value}
           key={i}
@@ -116,9 +153,22 @@ export default function questionSwitch(question, i = 0, table = null){
         value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
       }
 
+      let comment = null;
+      if(!table && context.state.comments[question.guid] !== undefined){
+        comment = context.state.comments[question.guid];
+      }
+      if(table &&
+        context.state.comments[table.guid] &&
+        context.state.comments[table.guid][table.elementaryQuestionGuid] &&
+        context.state.comments[table.guid][table.elementaryQuestionGuid][table.index]){
+        comment = context.state.comments[table.guid][table.elementaryQuestionGuid][table.index];
+      }
+
       return (
         <NumberComponent
           onChange={table ? onChangeTable.bind(null, table) : onChange}
+          onChangeComment={table ? onChangeTableComment.bind(null, table) : onChangeComment}
+          comment={comment}
           question={question}
           value={value}
           key={i}
@@ -137,11 +187,24 @@ export default function questionSwitch(question, i = 0, table = null){
         value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
       }
 
+      let comment = null;
+      if(!table && context.state.comments[question.guid] !== undefined){
+        comment = context.state.comments[question.guid];
+      }
+      if(table &&
+        context.state.comments[table.guid] &&
+        context.state.comments[table.guid][table.elementaryQuestionGuid] &&
+        context.state.comments[table.guid][table.elementaryQuestionGuid][table.index]){
+        comment = context.state.comments[table.guid][table.elementaryQuestionGuid][table.index];
+      }
+
       return (
         <DateComponent
           onChange={table ? onChangeTable.bind(null, table) : onChange}
+          onChangeComment={table ? onChangeTableComment.bind(null, table) : onChangeComment}
+          comment={comment}
           question={question}
-          value={table}
+          value={value}
           key={i}
         />
       )
@@ -158,9 +221,22 @@ export default function questionSwitch(question, i = 0, table = null){
         value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
       }
 
+      let comment = null;
+      if(!table && context.state.comments[question.guid] !== undefined){
+        comment = context.state.comments[question.guid];
+      }
+      if(table &&
+        context.state.comments[table.guid] &&
+        context.state.comments[table.guid][table.elementaryQuestionGuid] &&
+        context.state.comments[table.guid][table.elementaryQuestionGuid][table.index]){
+        comment = context.state.comments[table.guid][table.elementaryQuestionGuid][table.index];
+      }
+
       return (
         <BooleanComponent
           onChange={table ? onChangeTable.bind(null, table) : onChange}
+          onChangeComment={table ? onChangeTableComment.bind(null, table) : onChangeComment}
+          comment={comment}
           question={question}
           value={value}
           key={i}
@@ -179,9 +255,22 @@ export default function questionSwitch(question, i = 0, table = null){
         value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
       }
 
+      let comment = null;
+      if(!table && context.state.comments[question.guid] !== undefined){
+        comment = context.state.comments[question.guid];
+      }
+      if(table &&
+        context.state.comments[table.guid] &&
+        context.state.comments[table.guid][table.elementaryQuestionGuid] &&
+        context.state.comments[table.guid][table.elementaryQuestionGuid][table.index]){
+        comment = context.state.comments[table.guid][table.elementaryQuestionGuid][table.index];
+      }
+
       return (
         <SingleAnswerComponent
           onChange={table ? onChangeTable.bind(null, table) : onChange}
+          onChangeComment={table ? onChangeTableComment.bind(null, table) : onChangeComment}
+          comment={comment}
           question={question}
           value={value}
           key={i}
@@ -211,9 +300,22 @@ export default function questionSwitch(question, i = 0, table = null){
         value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
       }
 
+      let comment = null;
+      if(!table && context.state.comments[question.guid] !== undefined){
+        comment = context.state.comments[question.guid];
+      }
+      if(table &&
+        context.state.comments[table.guid] &&
+        context.state.comments[table.guid][table.elementaryQuestionGuid] &&
+        context.state.comments[table.guid][table.elementaryQuestionGuid][table.index]){
+        comment = context.state.comments[table.guid][table.elementaryQuestionGuid][table.index];
+      }
+
       return (
         <MultipleAnswerComponent
           onChange={table ? onChangeTable.bind(null, table) : someOf}
+          onChangeComment={table ? onChangeTableComment.bind(null, table) : onChangeComment}
+          comment={comment}
           question={question}
           value={value}
           key={i}

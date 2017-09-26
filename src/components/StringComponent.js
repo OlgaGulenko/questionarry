@@ -15,7 +15,7 @@ export default class StringComponent extends React.Component{
             { this.props.question.requestComment == true ? (
               <div className="form-group">
                 <label>Обязательный комментарий</label>
-                <textarea placeholder={this.props.question.commentExplanation} className="form-control"></textarea>
+                <textarea value={this.props.comment} onChange={e => this.props.onChangeComment(e.target.value, this.props.question.guid)} placeholder={this.props.question.commentExplanation} className="form-control"></textarea>
               </div>
 
             ) : (

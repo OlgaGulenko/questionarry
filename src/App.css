@@ -56,6 +56,11 @@ body{
   text-align: right;
 }
 
+table .fa-times{
+  cursor: pointer;
+  color: #ccc;
+}
+
 .cssload-container {
   width: 72px;
   margin: 58px auto;
@@ -125,7 +130,7 @@ body{
   content: '';
   width: 39px;
   height: 39px;
-  border-top: 6px solid rgb(199,64,102);
+  border-top: 6px solid #007bff;
   border-right: 6px solid transparent;
   border-bottom: 6px solid transparent;
   border-left: 6px solid transparent;
@@ -214,7 +219,7 @@ body{
 .successcontact{
   width: 60%;
   height: 60%;
-  
+
 }
 
 @keyframes cssload-clockwise {

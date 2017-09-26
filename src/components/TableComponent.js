@@ -97,8 +97,8 @@ export default class TableComponent extends React.Component{
                   { rows }
                 </tbody>
               </table>
-              <button type="button" className="btn" onClick={this.addRow.bind(this)}>
-                Добавить
+              <button type="button" className="btn btn-secondary" onClick={this.addRow.bind(this)}>
+                <i className="fa fa-plus-circle" aria-hidden="true"></i> Добавить
               </button>
 
           </div>

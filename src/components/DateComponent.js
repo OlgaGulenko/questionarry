@@ -11,7 +11,6 @@ export default class DateComponent extends React.Component{
         this.props.onChange(date, this.props.question.guid);
     }
 
-
     render(){
         return(
           <div>
@@ -31,7 +30,7 @@ export default class DateComponent extends React.Component{
             { this.props.question.requestComment ? (
               <div className="form-group">
                 <label>Обязательный комментарий</label>
-                <textarea  placeholder={this.props.question.commentExplanation} className="form-control"></textarea>
+                <textarea value={this.props.comment} onChange={e => this.props.onChangeComment(e.target.value, this.props.question.guid)} placeholder={this.props.question.commentExplanation} className="form-control"></textarea>
               </div>
 
             ) : (

@@ -4,6 +4,8 @@ import axios from 'axios';
 import questionSwitch, {setContext} from '../questionSwitch';
 import SuccessImg from './success_contact.png';
 
+const body = document.querySelector('body');
+
 class TestListComponent extends React.Component{
     constructor(props){
       super(props);
@@ -40,13 +42,13 @@ class TestListComponent extends React.Component{
 
     nextSection(){
       if(this.state.sectionIndex + 1  < this.state.data.sections.length){
-          this.setState({sectionIndex: this.state.sectionIndex + 1});
+        this.setState({sectionIndex: this.state.sectionIndex + 1}, () => { body.scrollTop = 0 });
       }
     }
 
     prevSection(){
       if(this.state.sectionIndex  > 0){
-          this.setState({sectionIndex: this.state.sectionIndex - 1});
+        this.setState({sectionIndex: this.state.sectionIndex - 1}, () => { body.scrollTop = 0 });
       }
     }
 
@@ -78,17 +80,18 @@ class TestListComponent extends React.Component{
   	    { !this.state.sent ? (
           <div>
             <button type="button" className="btn" disabled={this.state.sectionIndex === 0} onClick={this.prevSection}>
-              Назад
+              <i className="fa fa-chevron-circle-left" aria-hidden="true"></i> Назад
             </button>
             { this.state.status && this.state.sectionIndex + 1 === this.state.data.sections.length ? (
               <button type="button" className="btn btn-success" id="btn-forward" onClick={this.sendAnswers}>
-                Отправить
+                Отправить <i className="fa fa-paper-plane" aria-hidden="true"></i>
               </button>
             ) : (
               <button type="button" className="btn btn-primary" id="btn-forward" onClick={this.nextSection}>
-                Вперед
+                Вперед <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
               </button>
             )}
+            <hr />
 
             {this.state.status ? (
               <div className="main">
@@ -102,16 +105,18 @@ class TestListComponent extends React.Component{
                 <div className="cssload-rb"></div>
               </div>
             )}
+
+            <hr />
             <button type="button" className="btn" disabled={this.state.sectionIndex === 0} onClick={this.prevSection}>
-              Назад
+              <i className="fa fa-chevron-circle-left" aria-hidden="true"></i> Назад
             </button>
             { this.state.status && this.state.sectionIndex + 1 === this.state.data.sections.length ? (
               <button type="button" className="btn btn-success" id="btn-forward" onClick={this.sendAnswers}>
-                Отправить
+                Отправить <i className="fa fa-paper-plane" aria-hidden="true"></i>
               </button>
             ) : (
               <button type="button" className="btn btn-primary" id="btn-forward" onClick={this.nextSection}>
-                Вперед
+                Вперед <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
               </button>
             )}
           </div>
@@ -127,7 +132,15 @@ class TestListComponent extends React.Component{
               </div>
               <div className="card-body">
 
-                <code>{JSON.stringify(this.state.answers)}</code>
+                <code>
+                  {JSON.stringify({
+                    Id: this.state.data.Id,
+                    questionnaire: this.state.data.questionnaire,
+                    respondent: this.state.data.respondent,
+                    answers: this.state.answers,
+                    comments: this.state.comments
+                  })}
+                </code>
               </div>
             </div>
           </div>
