@@ -9,7 +9,7 @@ export default class TextComponent extends React.Component{
                     <label>
                     {this.props.question.code}
                     {this.props.question.title}</label>
-                    <textarea className="form-control" rows="3"  value={this.props.value || ''}
+                    <textareaclassName="form-control" rows="3"  value={this.props.value || ''}
                             onChange={(e)=>this.props.onChange(e.target.value, this.props.question.guid)}
                     />
                 </div>
@@ -17,9 +17,8 @@ export default class TextComponent extends React.Component{
             { this.props.question.requestComment ? (
               <div className="form-group">
                 <label>Обязательный комментарий</label>
-                <textarea className="form-control"></textarea>
+                <textarea placeholder={this.props.question.commentExplanation} className="form-control"></textarea>
               </div>
-
             ) : (
               <strong></strong>
             )}
@@ -27,3 +26,4 @@ export default class TextComponent extends React.Component{
         )
     }
 }
+/*maxLength={this.props.question.length} */

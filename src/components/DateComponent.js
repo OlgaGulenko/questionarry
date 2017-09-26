@@ -31,7 +31,7 @@ export default class DateComponent extends React.Component{
             { this.props.question.requestComment ? (
               <div className="form-group">
                 <label>Обязательный комментарий</label>
-                <textarea className="form-control"></textarea>
+                <textarea  placeholder={this.props.question.commentExplanation} className="form-control"></textarea>
               </div>
 
             ) : (
