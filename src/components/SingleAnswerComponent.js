@@ -30,6 +30,7 @@ export default class SingleAnswerComponent extends React.Component{
           )
         });
         return(
+          <div>
             <form>
                 <div className="form-check">
                   <label>
@@ -39,6 +40,17 @@ export default class SingleAnswerComponent extends React.Component{
                     {variants}
                 </div>
             </form>
+
+            { this.props.question.requestComment ? (
+              <div className="form-group">
+                <label>Обязательный комментарий</label>
+                <textarea className="form-control"></textarea>
+              </div>
+
+            ) : (
+              <strong></strong>
+            )}
+          </div>
 
         )
     }

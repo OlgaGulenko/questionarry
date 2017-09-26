@@ -3,6 +3,7 @@ import React from 'react';
 export default class BooleanComponent extends React.Component{
     render(){
         return(
+          <div>
             <form>
                 <div className="form-check">
                     <label>
@@ -52,6 +53,16 @@ export default class BooleanComponent extends React.Component{
 
                 </div>
             </form>
+            { this.props.question.requestComment  ? (
+              <div className="form-group">
+                <label>Обязательный комментарий</label>
+                <textarea className="form-control"></textarea>
+              </div>
+
+            ) : (
+              <strong></strong>
+            )}
+          </div>
 
         )
     }

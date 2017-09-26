@@ -3,6 +3,7 @@ import React from 'react';
 export default class TextComponent extends React.Component{
     render(){
         return(
+          <div>
             <form>
                 <div className="form-group">
                     <label>
@@ -13,6 +14,16 @@ export default class TextComponent extends React.Component{
                     />
                 </div>
             </form>
+            { this.props.question.requestComment ? (
+              <div className="form-group">
+                <label>Обязательный комментарий</label>
+                <textarea className="form-control"></textarea>
+              </div>
+
+            ) : (
+              <strong></strong>
+            )}
+          </div>
         )
     }
 }

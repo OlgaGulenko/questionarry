@@ -43,31 +43,42 @@ export default class TableComponent extends React.Component{
       })
 
       return(
-        <div className="form-group">
-            <label>
-              {this.props.question.code}&nbsp;
-              {this.props.question.title}
-            </label>
-            <table className="table table-bordered">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  { this.props.question.tabularQuestionList.map((column, index) => {
-                    return (
-                      <th key={index}>{column.title}</th>
-                    )
-                  }) }
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                { rows }
-              </tbody>
-            </table>
-            <button type="button" className="btn" onClick={this.addRow.bind(this)}>
-              Добавить
-            </button>
+        <div>
+          <div className="form-group">
+              <label>
+                {this.props.question.code}&nbsp;
+                {this.props.question.title}
+              </label>
+              <table className="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    { this.props.question.tabularQuestionList.map((column, index) => {
+                      return (
+                        <th key={index}>{column.title}</th>
+                      )
+                    }) }
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  { rows }
+                </tbody>
+              </table>
+              <button type="button" className="btn" onClick={this.addRow.bind(this)}>
+                Добавить
+              </button>
 
+          </div>
+          { this.props.question.requestComment ? (
+            <div className="form-group">
+              <label>Обязательный комментарий</label>
+              <textarea className="form-control"></textarea>
+            </div>
+
+          ) : (
+            <strong></strong>
+          )}
         </div>
       )
     }
