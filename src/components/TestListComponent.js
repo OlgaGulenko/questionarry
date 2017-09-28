@@ -60,11 +60,27 @@ class TestListComponent extends React.Component{
     transformJson(){
       let answers = Object.assign(this.state.answers);
 
+      let answersToArray = [];
+      for(let key of Object.keys(answers)){
+        answersToArray.push(answers[key]);
+      }
+
+      let commonAnswers = answersToArray.filter(answer => answer.guid);
+      for(let answer of answersToArray){
+        if(!answer.guid){
+          for(let row of answer){
+            for(let column of row){
+              commonAnswers.push(column);
+            }
+          }
+        }
+      }
+
       return JSON.stringify({
         Id: this.state.data.Id,
         questionnaire: this.state.data.questionnaire,
         respondent: this.state.data.respondent,
-        answers: answers
+        answers: commonAnswers
       })
     }
 

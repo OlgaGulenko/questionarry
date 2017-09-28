@@ -80,18 +80,26 @@ function someOf(value, guid, elementaryQuestionGuid){
 }
 
 function onChangeTable(table, value, guid){
+  // let answers = Object.assign(context.state.answers);
+  //
+  // answers[table.guid] = answers[table.guid] ? answers[table.guid] : {};
+  // answers[table.guid][table.elementaryQuestionGuid] = answers[table.guid][table.elementaryQuestionGuid] ? answers[table.guid][table.elementaryQuestionGuid] : [];
+  // answers[table.guid][table.elementaryQuestionGuid][table.index] = answers[table.guid][table.elementaryQuestionGuid][table.index] ? {
+  //   ...answers[table.guid][table.elementaryQuestionGuid][table.index],
+  //   answer: value
+  // } : {
+  //   guid: table.guid,
+  //   elementaryQuestionGuid: table.elementaryQuestionGuid,
+  //   answer: value
+  // };
+  //
+  // context.setState({answers}, () => {
+  //   console.log('answers', answers);
+  // });
+
   let answers = Object.assign(context.state.answers);
 
-  answers[table.guid] = answers[table.guid] ? answers[table.guid] : {};
-  answers[table.guid][table.elementaryQuestionGuid] = answers[table.guid][table.elementaryQuestionGuid] ? answers[table.guid][table.elementaryQuestionGuid] : [];
-  answers[table.guid][table.elementaryQuestionGuid][table.index] = answers[table.guid][table.elementaryQuestionGuid][table.index] ? {
-    ...answers[table.guid][table.elementaryQuestionGuid][table.index],
-    answer: value
-  } : {
-    guid: table.guid,
-    elementaryQuestionGuid: table.elementaryQuestionGuid,
-    answer: value
-  };
+  answers[table.guid][table.index][table.column].answer = value;
 
   context.setState({answers}, () => {
     console.log('answers', answers);
@@ -99,24 +107,53 @@ function onChangeTable(table, value, guid){
 }
 
 function onChangeTableComment(table, value, guid){
+  // let answers = Object.assign(context.state.answers);
+  //
+  // console.log('onChangeTableComment', table, value, guid)
+  //
+  // answers[table.guid] = answers[table.guid] ? answers[table.guid] : {};
+  // answers[table.guid][table.elementaryQuestionGuid] = answers[table.guid][table.elementaryQuestionGuid] ? answers[table.guid][table.elementaryQuestionGuid] : [];
+  // answers[table.guid][table.elementaryQuestionGuid][table.index] = answers[table.guid][table.elementaryQuestionGuid][table.index] ? {
+  //   ...answers[table.guid][table.elementaryQuestionGuid][table.index],
+  //   comment: value
+  // } : {
+  //   guid: table.guid,
+  //   elementaryQuestionGuid: table.elementaryQuestionGuid,
+  //   answer: null,
+  //   comment: value
+  // };
+  //
+  // context.setState({answers}, () => {
+  //   console.log('answers', answers);
+  // });
+
   let answers = Object.assign(context.state.answers);
 
-  console.log('onChangeTableComment', table, value, guid)
-
-  answers[table.guid] = answers[table.guid] ? answers[table.guid] : {};
-  answers[table.guid][table.elementaryQuestionGuid] = answers[table.guid][table.elementaryQuestionGuid] ? answers[table.guid][table.elementaryQuestionGuid] : [];
-  answers[table.guid][table.elementaryQuestionGuid][table.index] = answers[table.guid][table.elementaryQuestionGuid][table.index] ? {
-    ...answers[table.guid][table.elementaryQuestionGuid][table.index],
-    comment: value
-  } : {
-    guid: table.guid,
-    elementaryQuestionGuid: table.elementaryQuestionGuid,
-    answer: null,
-    comment: value
-  };
+  answers[table.guid][table.index][table.column].comment = value;
 
   context.setState({answers}, () => {
     console.log('answers', answers);
+  });
+}
+
+function onAddTableRows(columns){
+  let answers = Object.assign(context.state.answers);
+
+  if(!answers[columns[0].guid]) answers[columns[0].guid] = [];
+  answers[columns[0].guid].push(columns);
+
+  context.setState({answers}, () => {
+    console.log('onAddTableRows', answers);
+  });
+}
+
+function onRemoveTableRows(index, guid){
+  let answers = Object.assign(context.state.answers);
+
+  answers[guid].splice(index, 1);
+
+  context.setState({answers}, () => {
+    console.log('onRemoveTableRows', answers);
   });
 }
 
@@ -127,11 +164,8 @@ export default function questionSwitch(question, i = 0, table = null){
       if(!table && context.state.answers[question.guid] !== undefined){
         value = context.state.answers[question.guid];
       }
-      if(table &&
-        context.state.answers[table.guid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid][table.index]){
-        value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
+      if(table){
+        value = context.state.answers[table.guid][table.index][table.column];
       }
 
       return (
@@ -150,11 +184,8 @@ export default function questionSwitch(question, i = 0, table = null){
       if(!table && context.state.answers[question.guid] !== undefined){
         value = context.state.answers[question.guid];
       }
-      if(table &&
-        context.state.answers[table.guid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid][table.index]){
-        value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
+      if(table){
+        value = context.state.answers[table.guid][table.index][table.column].answer;
       }
 
       return(
@@ -173,11 +204,8 @@ export default function questionSwitch(question, i = 0, table = null){
       if(!table && context.state.answers[question.guid] !== undefined){
         value = context.state.answers[question.guid];
       }
-      if(table &&
-        context.state.answers[table.guid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid][table.index]){
-        value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
+      if(table){
+        value = context.state.answers[table.guid][table.index][table.column];
       }
 
       return (
@@ -196,11 +224,8 @@ export default function questionSwitch(question, i = 0, table = null){
       if(!table && context.state.answers[question.guid] !== undefined){
         value = context.state.answers[question.guid];
       }
-      if(table &&
-        context.state.answers[table.guid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid][table.index]){
-        value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
+      if(table){
+        value = context.state.answers[table.guid][table.index][table.column];
       }
 
       return (
@@ -219,11 +244,8 @@ export default function questionSwitch(question, i = 0, table = null){
       if(!table && context.state.answers[question.guid] !== undefined){
         value = context.state.answers[question.guid];
       }
-      if(table &&
-        context.state.answers[table.guid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid][table.index]){
-        value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
+      if(table){
+        value = context.state.answers[table.guid][table.index][table.column];
       }
 
       return (
@@ -242,11 +264,8 @@ export default function questionSwitch(question, i = 0, table = null){
       if(!table && context.state.answers[question.guid] !== undefined){
         value = context.state.answers[question.guid];
       }
-      if(table &&
-        context.state.answers[table.guid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid][table.index]){
-        value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
+      if(table){
+        value = context.state.answers[table.guid][table.index][table.column];
       }
 
       return (
@@ -265,6 +284,8 @@ export default function questionSwitch(question, i = 0, table = null){
       return (
         <TableComponent
           onChange={table ? onChangeTable.bind(null, table) : onChange}
+          onAddTableRows={onAddTableRows}
+          onRemoveTableRows={onRemoveTableRows}
           question={question}
           value={context.state.answers[question.guid] !== undefined ? context.state.answers[question.guid] :null}
           key={i}
@@ -276,11 +297,8 @@ export default function questionSwitch(question, i = 0, table = null){
       if(!table && context.state.answers[question.guid] !== undefined){
         value = context.state.answers[question.guid];
       }
-      if(table &&
-        context.state.answers[table.guid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid][table.index]){
-        value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
+      if(table){
+        value = context.state.answers[table.guid][table.index][table.column];
       }
 
       return (
