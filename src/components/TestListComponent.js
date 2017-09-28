@@ -31,7 +31,7 @@ class TestListComponent extends React.Component{
 
     async getData(){
       try{
-        let response = await axios.get('https://api.myjson.com/bins/1hg0h5');
+        let response = await axios.get('https://api.myjson.com/bins/13gl0p');
 
         this.setState({ data: response.data , status: true});
       } catch(e) {
