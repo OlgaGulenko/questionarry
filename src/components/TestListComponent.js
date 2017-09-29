@@ -65,14 +65,21 @@ class TestListComponent extends React.Component{
         answersToArray.push(answers[key]);
       }
 
-      let commonAnswers = answersToArray.filter(answer => answer.guid);
+      let commonAnswers = answersToArray.filter(answer => answer.guid && !Array.isArray(answer.answer));
       for(let answer of answersToArray){
         if(!answer.guid){
-          for(let row of answer){
-            for(let column of row){
-              commonAnswers.push(column);
+          for(let i = 0; i < answer.length; i++){
+            for(let column of answer[i]){
+              commonAnswers.push({ ...column, cellnumber: i + 1});
             }
           }
+        } else if(Array.isArray(answer.answer)){
+          for(let i in answer.answer){
+            commonAnswers.push({ ...answer, answer: answer.answer[i] });
+          }
+        } else if(typeof answer.answer === 'object' && answer.answer._isAMomentObject){
+          console.log(true);
+          answer.answer = answer.answer.format('YYYY-MM-DD') + "T00:00:00Z";
         }
       }
 
