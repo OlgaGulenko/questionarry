@@ -26,13 +26,16 @@ class TestListComponent extends React.Component{
     }
 
     componentDidMount(){
-      this.getData();
+      this.getData(new URL(window.location.href).searchParams.get("url"));
     }
 
-    async getData(){
+    async getData(url){
       try{
-        let response = await axios.get('https://api.myjson.com/bins/1hg0h5');
-
+        if (!url){
+          throw new Error("url params undefined");
+        }
+        let response = await axios.get(url);
+        console.log(response);
         this.setState({ data: response.data , status: true});
       } catch(e) {
         alert(e.message);
