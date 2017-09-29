@@ -8,7 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 export default class DateComponent extends React.Component{
 
     handleChange(date) {
-        this.props.onChange(date, this.props.question.guid);
+        this.props.onChange(date, this.props.question.guid, this.props.question.elementaryQuestionGuid);
     }
 
     render(){

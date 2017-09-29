@@ -24,7 +24,7 @@ export default class NumberComponent extends React.Component{
 											className="form-control"
 											id="numberInput"
                       value={this.props.value || ''}
-                      onChange={(value)=>this.props.onChange(value, this.props.question.guid)}
+                      onChange={(value)=>this.props.onChange(value, this.props.question.guid, this.props.question.elementaryQuestionGuid)}
 											min={this.props.question.min}
 											max={this.props.question.max}
 											format={this.accuracyPlaceholder()}

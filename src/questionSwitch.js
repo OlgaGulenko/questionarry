@@ -15,42 +15,91 @@ export function setContext(ctx){
   context = ctx;
 }
 
-function onChange(value, guid){
+function onChange(value, guid, elementaryQuestionGuid){
   //console.log(guid);
   let answers = Object.assign(context.state.answers);
-  answers[guid] = value;
+  if(answers[guid]){
+    answers[guid] = {
+      ...answers[guid],
+      answer: value
+    };
+  } else {
+    answers[guid] = {
+      guid,
+      elementaryQuestionGuid,
+      answer: value
+    };
+  }
   context.setState({answers}, () => {
     console.log(answers);
   });
 }
 
 function onChangeComment(value, guid){
-  let comments = Object.assign(context.state.comments);
-  comments[guid] = value;
-  context.setState({comments}, () => {
-    console.log('comments', comments);
+  let answers = Object.assign(context.state.answers);
+  if(answers[guid]){
+    answers[guid] = {
+      ...answers[guid],
+      comment: value
+    };
+  } else {
+    answers[guid] = {
+      guid,
+      answer: null,
+      comment: value
+    };
+  }
+
+  context.setState({answers}, () => {
+    console.log('answers', answers);
   });
 }
 
-function someOf(value, guid){
+function someOf(value, guid, elementaryQuestionGuid){
   let answers = Object.assign(context.state.answers);
   console.log("value: ",value, 'guid',guid);
 
-  let index = answers[guid] ? answers[guid].indexOf(value) : -1;
+  let index = answers[guid] ? answers[guid].answer.indexOf(value) : -1;
+
+  console.log(index, answers[guid] ? answers[guid].answer : false)
+
   if(index > -1 ){
-    answers[guid].splice(index,1);
+    answers[guid].answer.splice(index,1);
   }else{
-    answers[guid] = answers[guid] ? [...answers[guid], value] : [value];
+    answers[guid] = answers[guid] ? {
+      guid,
+      elementaryQuestionGuid,
+      answer: [...answers[guid].answer, value]
+    } : {
+      guid,
+      elementaryQuestionGuid,
+      answer: [value]
+    };
   }
   context.setState({answers}, () => {console.log(context.state.answers);});
 }
 
 function onChangeTable(table, value, guid){
+  // let answers = Object.assign(context.state.answers);
+  //
+  // answers[table.guid] = answers[table.guid] ? answers[table.guid] : {};
+  // answers[table.guid][table.elementaryQuestionGuid] = answers[table.guid][table.elementaryQuestionGuid] ? answers[table.guid][table.elementaryQuestionGuid] : [];
+  // answers[table.guid][table.elementaryQuestionGuid][table.index] = answers[table.guid][table.elementaryQuestionGuid][table.index] ? {
+  //   ...answers[table.guid][table.elementaryQuestionGuid][table.index],
+  //   answer: value
+  // } : {
+  //   guid: table.guid,
+  //   elementaryQuestionGuid: table.elementaryQuestionGuid,
+  //   answer: value
+  // };
+  //
+  // context.setState({answers}, () => {
+  //   console.log('answers', answers);
+  // });
+
   let answers = Object.assign(context.state.answers);
 
-  answers[table.guid] = answers[table.guid] ? answers[table.guid] : {};
-  answers[table.guid][table.elementaryQuestionGuid] = answers[table.guid][table.elementaryQuestionGuid] ? answers[table.guid][table.elementaryQuestionGuid] : [];
-  answers[table.guid][table.elementaryQuestionGuid][table.index] = value;
+  answers[table.guid][table.index][table.column].answer = value;
 
   context.setState({answers}, () => {
     console.log('answers', answers);
@@ -58,221 +107,174 @@ function onChangeTable(table, value, guid){
 }
 
 function onChangeTableComment(table, value, guid){
-  let comments = Object.assign(context.state.comments);
+  // let answers = Object.assign(context.state.answers);
+  //
+  // console.log('onChangeTableComment', table, value, guid)
+  //
+  // answers[table.guid] = answers[table.guid] ? answers[table.guid] : {};
+  // answers[table.guid][table.elementaryQuestionGuid] = answers[table.guid][table.elementaryQuestionGuid] ? answers[table.guid][table.elementaryQuestionGuid] : [];
+  // answers[table.guid][table.elementaryQuestionGuid][table.index] = answers[table.guid][table.elementaryQuestionGuid][table.index] ? {
+  //   ...answers[table.guid][table.elementaryQuestionGuid][table.index],
+  //   comment: value
+  // } : {
+  //   guid: table.guid,
+  //   elementaryQuestionGuid: table.elementaryQuestionGuid,
+  //   answer: null,
+  //   comment: value
+  // };
+  //
+  // context.setState({answers}, () => {
+  //   console.log('answers', answers);
+  // });
 
-  console.log('onChangeTableComment', table, value, guid)
+  let answers = Object.assign(context.state.answers);
 
-  comments[table.guid] = comments[table.guid] ? comments[table.guid] : {};
-  comments[table.guid][table.elementaryQuestionGuid] = comments[table.guid][table.elementaryQuestionGuid] ? comments[table.guid][table.elementaryQuestionGuid] : [];
-  comments[table.guid][table.elementaryQuestionGuid][table.index] = value;
+  answers[table.guid][table.index][table.column].comment = value;
 
-  context.setState({comments}, () => {
-    console.log('comments', comments);
+  context.setState({answers}, () => {
+    console.log('answers', answers);
+  });
+}
+
+function onAddTableRows(columns){
+  let answers = Object.assign(context.state.answers);
+
+  if(!answers[columns[0].guid]) answers[columns[0].guid] = [];
+  answers[columns[0].guid].push(columns);
+
+  context.setState({answers}, () => {
+    console.log('onAddTableRows', answers);
+  });
+}
+
+function onRemoveTableRows(index, guid){
+  let answers = Object.assign(context.state.answers);
+
+  answers[guid].splice(index, 1);
+
+  context.setState({answers}, () => {
+    console.log('onRemoveTableRows', answers);
   });
 }
 
 export default function questionSwitch(question, i = 0, table = null){
   switch(question.answerType){
     case 'Строка': {
-      let value = null;
+      let value = { answer: null };
       if(!table && context.state.answers[question.guid] !== undefined){
         value = context.state.answers[question.guid];
       }
-      if(table &&
-        context.state.answers[table.guid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid][table.index]){
-        value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
-      }
-
-      let comment = null;
-      if(!table && context.state.comments[question.guid] !== undefined){
-        comment = context.state.comments[question.guid];
-      }
-      if(table &&
-        context.state.comments[table.guid] &&
-        context.state.comments[table.guid][table.elementaryQuestionGuid] &&
-        context.state.comments[table.guid][table.elementaryQuestionGuid][table.index]){
-        comment = context.state.comments[table.guid][table.elementaryQuestionGuid][table.index];
+      if(table){
+        value = context.state.answers[table.guid][table.index][table.column];
       }
 
       return (
         <StringComponent
           onChange={table ? onChangeTable.bind(null, table) : onChange}
           onChangeComment={table ? onChangeTableComment.bind(null, table) : onChangeComment}
-          comment={comment}
+          comment={value.comment}
           question={question}
-          value={value}
+          value={value.answer}
           key={i}
         />
       )
     }
     case 'text': {
-      let value = null;
+      let value = { answer: null };
       if(!table && context.state.answers[question.guid] !== undefined){
         value = context.state.answers[question.guid];
       }
-      if(table &&
-        context.state.answers[table.guid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid][table.index]){
-        value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
-      }
-
-      let comment = null;
-      if(!table && context.state.comments[question.guid] !== undefined){
-        comment = context.state.comments[question.guid];
-      }
-      if(table &&
-        context.state.comments[table.guid] &&
-        context.state.comments[table.guid][table.elementaryQuestionGuid] &&
-        context.state.comments[table.guid][table.elementaryQuestionGuid][table.index]){
-        comment = context.state.comments[table.guid][table.elementaryQuestionGuid][table.index];
+      if(table){
+        value = context.state.answers[table.guid][table.index][table.column].answer;
       }
 
       return(
         <TextComponent
           onChange={table ? onChangeTable.bind(null, table) : onChange}
           onChangeComment={table ? onChangeTableComment.bind(null, table) : onChangeComment}
-          comment={comment}
+          comment={value.comment}
           question={question}
-          value={value}
+          value={value.answer}
           key={i}
         />
       )
     }
     case 'Число': {
-      let value = null;
+      let value = { answer: null };
       if(!table && context.state.answers[question.guid] !== undefined){
         value = context.state.answers[question.guid];
       }
-      if(table &&
-        context.state.answers[table.guid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid][table.index]){
-        value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
-      }
-
-      let comment = null;
-      if(!table && context.state.comments[question.guid] !== undefined){
-        comment = context.state.comments[question.guid];
-      }
-      if(table &&
-        context.state.comments[table.guid] &&
-        context.state.comments[table.guid][table.elementaryQuestionGuid] &&
-        context.state.comments[table.guid][table.elementaryQuestionGuid][table.index]){
-        comment = context.state.comments[table.guid][table.elementaryQuestionGuid][table.index];
+      if(table){
+        value = context.state.answers[table.guid][table.index][table.column];
       }
 
       return (
         <NumberComponent
           onChange={table ? onChangeTable.bind(null, table) : onChange}
           onChangeComment={table ? onChangeTableComment.bind(null, table) : onChangeComment}
-          comment={comment}
+          comment={value.comment}
           question={question}
-          value={value}
+          value={value.answer}
           key={i}
         />
       )
     }
     case 'Дата': {
-      let value = null;
+      let value = { answer: null };
       if(!table && context.state.answers[question.guid] !== undefined){
         value = context.state.answers[question.guid];
       }
-      if(table &&
-        context.state.answers[table.guid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid][table.index]){
-        value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
-      }
-
-      let comment = null;
-      if(!table && context.state.comments[question.guid] !== undefined){
-        comment = context.state.comments[question.guid];
-      }
-      if(table &&
-        context.state.comments[table.guid] &&
-        context.state.comments[table.guid][table.elementaryQuestionGuid] &&
-        context.state.comments[table.guid][table.elementaryQuestionGuid][table.index]){
-        comment = context.state.comments[table.guid][table.elementaryQuestionGuid][table.index];
+      if(table){
+        value = context.state.answers[table.guid][table.index][table.column];
       }
 
       return (
         <DateComponent
           onChange={table ? onChangeTable.bind(null, table) : onChange}
           onChangeComment={table ? onChangeTableComment.bind(null, table) : onChangeComment}
-          comment={comment}
+          comment={value.comment}
           question={question}
-          value={value}
+          value={value.answer}
           key={i}
         />
       )
     }
     case 'Булево': {
-      let value = null;
+      let value = { answer: null };
       if(!table && context.state.answers[question.guid] !== undefined){
         value = context.state.answers[question.guid];
       }
-      if(table &&
-        context.state.answers[table.guid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid][table.index]){
-        value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
-      }
-
-      let comment = null;
-      if(!table && context.state.comments[question.guid] !== undefined){
-        comment = context.state.comments[question.guid];
-      }
-      if(table &&
-        context.state.comments[table.guid] &&
-        context.state.comments[table.guid][table.elementaryQuestionGuid] &&
-        context.state.comments[table.guid][table.elementaryQuestionGuid][table.index]){
-        comment = context.state.comments[table.guid][table.elementaryQuestionGuid][table.index];
+      if(table){
+        value = context.state.answers[table.guid][table.index][table.column];
       }
 
       return (
         <BooleanComponent
           onChange={table ? onChangeTable.bind(null, table) : onChange}
           onChangeComment={table ? onChangeTableComment.bind(null, table) : onChangeComment}
-          comment={comment}
+          comment={value.comment}
           question={question}
-          value={value}
+          value={value.answer}
           key={i}
         />
       )
     }
     case 'Выбор одного варианта ответа из предложенных': {
-      let value = null;
+      let value = { answer: null };
       if(!table && context.state.answers[question.guid] !== undefined){
         value = context.state.answers[question.guid];
       }
-      if(table &&
-        context.state.answers[table.guid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid][table.index]){
-        value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
-      }
-
-      let comment = null;
-      if(!table && context.state.comments[question.guid] !== undefined){
-        comment = context.state.comments[question.guid];
-      }
-      if(table &&
-        context.state.comments[table.guid] &&
-        context.state.comments[table.guid][table.elementaryQuestionGuid] &&
-        context.state.comments[table.guid][table.elementaryQuestionGuid][table.index]){
-        comment = context.state.comments[table.guid][table.elementaryQuestionGuid][table.index];
+      if(table){
+        value = context.state.answers[table.guid][table.index][table.column];
       }
 
       return (
         <SingleAnswerComponent
           onChange={table ? onChangeTable.bind(null, table) : onChange}
           onChangeComment={table ? onChangeTableComment.bind(null, table) : onChangeComment}
-          comment={comment}
+          comment={value.comment}
           question={question}
-          value={value}
+          value={value.answer}
           key={i}
           answers={context.state.data.sections[context.state.sectionIndex].answers}
         />
@@ -282,6 +284,8 @@ export default function questionSwitch(question, i = 0, table = null){
       return (
         <TableComponent
           onChange={table ? onChangeTable.bind(null, table) : onChange}
+          onAddTableRows={onAddTableRows}
+          onRemoveTableRows={onRemoveTableRows}
           question={question}
           value={context.state.answers[question.guid] !== undefined ? context.state.answers[question.guid] :null}
           key={i}
@@ -289,35 +293,21 @@ export default function questionSwitch(question, i = 0, table = null){
       )
     }
     case 'Выбор нескольких вариантов ответа из предложенных': {
-      let value = null;
+      let value = { answer: null };
       if(!table && context.state.answers[question.guid] !== undefined){
         value = context.state.answers[question.guid];
       }
-      if(table &&
-        context.state.answers[table.guid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid] &&
-        context.state.answers[table.guid][table.elementaryQuestionGuid][table.index]){
-        value = context.state.answers[table.guid][table.elementaryQuestionGuid][table.index];
-      }
-
-      let comment = null;
-      if(!table && context.state.comments[question.guid] !== undefined){
-        comment = context.state.comments[question.guid];
-      }
-      if(table &&
-        context.state.comments[table.guid] &&
-        context.state.comments[table.guid][table.elementaryQuestionGuid] &&
-        context.state.comments[table.guid][table.elementaryQuestionGuid][table.index]){
-        comment = context.state.comments[table.guid][table.elementaryQuestionGuid][table.index];
+      if(table){
+        value = context.state.answers[table.guid][table.index][table.column];
       }
 
       return (
         <MultipleAnswerComponent
           onChange={table ? onChangeTable.bind(null, table) : someOf}
           onChangeComment={table ? onChangeTableComment.bind(null, table) : onChangeComment}
-          comment={comment}
+          comment={value.comment}
           question={question}
-          value={value}
+          value={value.answer}
           key={i}
           answers={context.state.data.sections[context.state.sectionIndex].answers}
         />

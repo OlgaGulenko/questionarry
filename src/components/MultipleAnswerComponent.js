@@ -11,7 +11,7 @@ export default class MultipleAnswerComponent extends React.Component{
                   <input type="checkbox" className="custom-control-input"
                     value={variant.answer.guid}
                     checked={this.props.value !== null ? this.props.value.indexOf(variant.answer.guid) > -1: false}
-                    onChange={(e)=>this.props.onChange(e.target.value, this.props.question.guid)}
+                    onChange={(e)=>this.props.onChange(e.target.value, this.props.question.guid, this.props.question.elementaryQuestionGuid)}
                   />
                   <span className="custom-control-indicator" type="checkbox" />
                   <span className="custom-control-description">{variant.answer.title}</span>

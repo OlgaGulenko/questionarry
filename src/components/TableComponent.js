@@ -9,14 +9,21 @@ export default class TableComponent extends React.Component{
       if(this.props.value){
         console.log('value', this.props.value);
 
-        let keys = Object.keys(this.props.value);
-        let count = 0;
-        for(let key of keys){
-          count = this.props.value[key].length > count ? this.props.value[key].length : count;
-        }
+        // let keys = Object.keys(this.props.value);
+        // let count = 0;
+        // for(let key of keys){
+        //   count = this.props.value[key].length > count ? this.props.value[key].length : count;
+        // }
+        //
+        // let rows = [];
+        // for(let i = 0; i < count; i++){
+        //   rows.push({});
+        // }
+        //
+        // this.state = { rows };
 
         let rows = [];
-        for(let i = 0; i < count; i++){
+        for(let i = 0; i < this.props.value.length; i++){
           rows.push({});
         }
 
@@ -32,7 +39,21 @@ export default class TableComponent extends React.Component{
       let rows = Array.from(this.state.rows);
 
       rows.push({});
+
+      let columns = this.props.question.tabularQuestionList.map((column, index) => {
+        return {
+          guid: this.props.question.guid,
+          elementaryQuestionGuid: column.elementaryQuestionGuid,
+          answer: null,
+          comment: null
+        }
+      })
+
+      console.log(columns);
+
       this.setState({ rows });
+
+      this.props.onAddTableRows(columns);
     }
 
     removeRow(index){
@@ -40,17 +61,8 @@ export default class TableComponent extends React.Component{
 
       rows.splice(index, 1);
       this.setState({ rows });
-    }
 
-    onChangeRow(index, value, guid){
-      let rows = Array.from(this.state.rows);
-
-      rows[index][guid] = value;
-
-      console.log(rows);
-      this.setState({ rows }, () => {
-        this.props.onChange({ rows }, this.props.question.guid);
-      });
+      this.props.onRemoveTableRows(index, this.props.question.guid);
     }
 
     render(){
@@ -63,7 +75,8 @@ export default class TableComponent extends React.Component{
                 <td key={index}>{questionSwitch(column, 0, {
                   guid: this.props.question.guid,
                   elementaryQuestionGuid: column.elementaryQuestionGuid,
-                  index: idx
+                  index: idx,
+                  column: index
                 })}</td>
               )
             }) }

@@ -35,11 +35,11 @@ class TestListComponent extends React.Component{
           throw new Error("url params undefined");
         }
         let response = await axios.get(url);
-        console.log(response);
+
         this.setState({ data: response.data , status: true});
       } catch(e) {
         alert(e.message);
-        console.error('fetch error', e);
+
       }
     }
 
